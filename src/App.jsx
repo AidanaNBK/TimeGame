@@ -1,6 +1,8 @@
-import Player from './components/Player.jsx';
+import Player from "./components/Player.jsx";
+import { useState } from "react";
 
 function App() {
+  let [userName, setUserName] = useState("unknown");
   return (
     <>
       <Player />
