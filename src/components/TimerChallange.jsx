@@ -4,6 +4,7 @@ import ResultModal from "./ResultModal";
 export default function TimerChallange(props) {
   const timer = useRef();
   const dialog = useRef();
+
   //   const [timerStarted, setTimerStarted] = useState(false);
   //   const [timerExpired, setTimerExpired] = useState(false);
   const [timeRemaining, setRemaining] = useState(props.targetTime * 1000);
@@ -13,8 +14,11 @@ export default function TimerChallange(props) {
 
   if (timeRemaining <= 0) {
     clearInterval(timer.current);
-    setRemaining(props.targetTime * 1000);
     dialog.current.open();
+  }
+
+  function handleReset() {
+    setRemaining(props.targetTime * 1000);
   }
 
   function handleStart() {
@@ -37,7 +41,12 @@ export default function TimerChallange(props) {
           result={"lost"}
         />
       )} */}
-      <ResultModal ref={dialog} targetTime={props.targetTime} result={"lost"} />
+      <ResultModal
+        ref={dialog}
+        targetTime={props.targetTime}
+        remainingTime={timeRemaining}
+        onReset={handleReset}
+      />
       <section className="challenge">
         <h2>{props.title}</h2>
         {/* {timerExpired && <p>You lost!</p>} */}

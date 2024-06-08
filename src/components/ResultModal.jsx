@@ -1,4 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef } from "react";
+import { createPortal } from "react-dom";
 
 const ResultModal = forwardRef(function ResultModal(props, ref) {
   const dialog = useRef();
@@ -10,21 +11,30 @@ const ResultModal = forwardRef(function ResultModal(props, ref) {
     };
   });
 
-  return (
-    <dialog ref={dialog} className="result-modal">
+  const userLost = props.remainingTime <= 0;
+  const score =
+    (1 - props.remainingTime / (props.targetTime * 1000)).toFixed(2) * 100;
+  return createPortal(
+    <dialog ref={dialog} className="result-modal" onClose={props.onReset}>
       {/* adding "open" property to <dialog> makes it visible */}
-      <h2> Your Score: {props.result}</h2>
+      <h2> {userLost ? "You've lost" : `Your Score ${score}`}</h2>
       <p>
         The target time was <strong>{props.targetTime}</strong>
       </p>
-      <p>
-        You've stopped timer with <strong>X seconds</strong>
-      </p>
-      <form method="dialog">
+      {userLost ? (
+        ""
+      ) : (
+        <p>
+          You've stopped timer with{" "}
+          <strong>{(props.remainingTime / 1000).toFixed(2)}</strong>
+        </p>
+      )}
+      <form method="dialog" onSubmit={props.onReset}>
         {/* If there method = "dialog" in the <dialog> component, button allows to close */}
         <button>Close</button>
       </form>
-    </dialog>
+    </dialog>,
+    document.getElementById("modal")
   );
 });
 
