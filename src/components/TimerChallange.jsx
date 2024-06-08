@@ -10,7 +10,7 @@ export default function TimerChallange(props) {
   function handleStart() {
     timer.current = setTimeout(() => {
       setTimerExpired(true);
-      dialog.current.showModal();
+      dialog.current.open();
     }, props.targetTime * 1000);
     setTimerStarted(true);
   }
@@ -18,7 +18,7 @@ export default function TimerChallange(props) {
     clearTimeout(timer.current);
     setTimerStarted(false);
     setTimerExpired(false);
-    dialog.current.showModal();
+    dialog.current.open();
   }
   return (
     <>
