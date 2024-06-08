@@ -4,20 +4,28 @@ import ResultModal from "./ResultModal";
 export default function TimerChallange(props) {
   const timer = useRef();
   const dialog = useRef();
-  const [timerStarted, setTimerStarted] = useState(false);
-  const [timerExpired, setTimerExpired] = useState(false);
+  //   const [timerStarted, setTimerStarted] = useState(false);
+  //   const [timerExpired, setTimerExpired] = useState(false);
+  const [timeRemaining, setRemaining] = useState(props.targetTime * 1000);
+
+  const timerActive =
+    timeRemaining > 0 && timeRemaining < props.targetTime * 1000;
+
+  if (timeRemaining <= 0) {
+    clearInterval(timer.current);
+    setRemaining(props.targetTime * 1000);
+    dialog.current.open();
+  }
 
   function handleStart() {
-    timer.current = setTimeout(() => {
-      setTimerExpired(true);
-      dialog.current.open();
-    }, props.targetTime * 1000);
-    setTimerStarted(true);
+    timer.current = setInterval(() => {
+      setRemaining((current) => current - 10);
+    }, 10);
+    // it's better to use the interval, as it will be possible to configure time remaining
+    // use Interval just repeats itself in the configured interval
   }
   function handleStop() {
-    clearTimeout(timer.current);
-    setTimerStarted(false);
-    setTimerExpired(false);
+    clearInterval(timer.current);
     dialog.current.open();
   }
   return (
@@ -37,12 +45,12 @@ export default function TimerChallange(props) {
           {props.targetTime} second{props.targetTime > 1 ? "s" : ""}
         </p>
         <p>
-          <button onClick={timerStarted ? handleStop : handleStart}>
-            {timerStarted ? "Stop" : "Start"} Challange
+          <button onClick={timerActive ? handleStop : handleStart}>
+            {timerActive ? "Stop" : "Start"} Challange
           </button>
         </p>
-        <p className={timerStarted ? "active" : undefined}>
-          {timerStarted ? "Time is running" : "Timer inactive"}
+        <p className={timerActive ? "active" : undefined}>
+          {timerActive ? "Time is running" : "Timer inactive"}
         </p>
       </section>
     </>
